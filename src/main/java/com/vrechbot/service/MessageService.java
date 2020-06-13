@@ -13,9 +13,6 @@ public class MessageService {
     @Value(value = "${telegram.chat}")
     private String chat_id;
 
-    @Value(value = "${telegram.parseMode}")
-    private String parse_mode;
-
     private Feign feign;
 
     public MessageService(Feign feign) {
@@ -23,6 +20,6 @@ public class MessageService {
     }
 
     public void sendMessage(String mensagem) {
-        feign.enviarMensagem(botID, chat_id, parse_mode, mensagem);
+        feign.enviarMensagem(botID, chat_id, "Markdown", mensagem);
     }
 }
