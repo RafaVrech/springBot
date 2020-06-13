@@ -28,7 +28,7 @@ public class BotService {
         priceActionRepository.save(priceAction);
     }
 
-    @Scheduled(cron = "0/30 * * ? * *")
+    //@Scheduled(cron = "0/30 * * ? * *")
     //@Scheduled(cron = "0 30 * * * ?")
     public void verifyTradeCall() {
         List<String> pairs = Arrays.asList("EURGBP", "EURUSD", "GBPUSP", "USDJPY");
