@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class BotService {
     }
 
     @Scheduled(cron = "0/30 * * ? * *")
+    //@Scheduled(cron = "0 30 * * * ?")
     public void verifyTradeCall() {
         List<String> pairs = Arrays.asList("EURGBP", "EURUSD", "GBPUSP", "USDJPY");
 
@@ -36,6 +38,7 @@ public class BotService {
                         .get(data)
                         .ifPresent(PairStrategy::checkTradeCalls)
         );
+        System.out.println(LocalTime.now());
     }
 
 }

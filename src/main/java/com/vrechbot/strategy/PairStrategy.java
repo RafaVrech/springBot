@@ -16,6 +16,7 @@ public abstract class PairStrategy {
 
     private static final String BUY = "BUY ";
     private static final String SELL = "SELL ";
+    private static final String USDJPY = "USDJPY";
 
     @Autowired
     private PriceActionRepository priceActionRepository;
@@ -29,9 +30,9 @@ public abstract class PairStrategy {
         List<PriceAction> buyActions = priceActionRepository.findBuyActionsByDataAndPair(LocalDateTime.now().minusMonths(2), getType());
         List<PriceAction> sellActions = priceActionRepository.findSellActionsByDataAndPair(LocalDateTime.now().minusMonths(2), getType());
 
-        if (!buyActions.isEmpty() && buyActions.size() >= 6) {
+        if (buyActions.size() >= 2) {
             calculateAndSendMessage(buyActions, BUY);
-        } else if (!sellActions.isEmpty() && sellActions.size() >= 6) {
+        } else if (sellActions.size() >= 2) {
             calculateAndSendMessage(sellActions, SELL);
         }
     }
@@ -39,17 +40,17 @@ public abstract class PairStrategy {
     private void calculateAndSendMessage(List<PriceAction> priceAction, String orderType) {
         BigDecimal sum = priceAction.stream()
                 .map(sell -> new BigDecimal(sell.getPreco())).reduce(BigDecimal.ZERO, BigDecimal::add)
-                .divide(new BigDecimal(priceAction.size()), 4, RoundingMode.DOWN);
+                .divide(new BigDecimal(priceAction.size()), 5, RoundingMode.DOWN);
 
         BigDecimal takeProfit;
         BigDecimal stopLoss;
 
         if (BUY.equals(orderType)) {
-            takeProfit = sum.add(BigDecimal.valueOf(0.002)); //subtract 20 pips -> +- 20 bucks
-            stopLoss = sum.subtract(BigDecimal.valueOf(0.002));
+            takeProfit = getType().equals(USDJPY) ? sum.add(BigDecimal.valueOf(0.2)) : sum.add(BigDecimal.valueOf(0.002)); //subtract 20 pips -> +- 20 bucks
+            stopLoss = getType().equals(USDJPY) ? sum.subtract(BigDecimal.valueOf(0.2)) : sum.subtract(BigDecimal.valueOf(0.002));
         } else {
-            takeProfit = sum.subtract(BigDecimal.valueOf(0.002)); //subtract 20 pips -> +- 20 bucks
-            stopLoss = sum.add(BigDecimal.valueOf(0.002));
+            takeProfit = getType().equals(USDJPY) ? sum.subtract(BigDecimal.valueOf(0.2)) : sum.subtract(BigDecimal.valueOf(0.002)); //subtract 20 pips -> +- 20 bucks
+            stopLoss = getType().equals(USDJPY) ? sum.add(BigDecimal.valueOf(0.2)) : sum.add(BigDecimal.valueOf(0.002));
         }
 
         messageService.sendMessage("Wake Up!\n\n" + orderType + getType() +
