@@ -18,11 +18,14 @@ public abstract class PairStrategy {
     private static final String SELL = "SELL ";
     private static final String USDJPY = "USDJPY";
 
-    @Autowired
-    private PriceActionRepository priceActionRepository;
+    private final PriceActionRepository priceActionRepository;
 
-    @Autowired
-    private MessageService messageService;
+    private final MessageService messageService;
+
+    public PairStrategy(PriceActionRepository priceActionRepository, MessageService messageService) {
+        this.priceActionRepository = priceActionRepository;
+        this.messageService = messageService;
+    }
 
     abstract String getType();
 

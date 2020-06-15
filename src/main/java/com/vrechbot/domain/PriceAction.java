@@ -31,4 +31,7 @@ public class PriceAction {
 
     @Column(name = "sl")
     private String sl;
+
+    @Column(name = "percentage")
+    private Integer percentage;
 }

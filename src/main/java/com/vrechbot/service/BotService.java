@@ -5,7 +5,6 @@ import com.vrechbot.repository.PriceActionRepository;
 import com.vrechbot.strategy.PairStrategy;
 import com.vrechbot.strategy.PairStrategyFactory;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
@@ -15,8 +14,8 @@ import java.util.List;
 @Service
 public class BotService {
 
-    private PriceActionRepository priceActionRepository;
-    private PairStrategyFactory pairStrategyFactory;
+    private final PriceActionRepository priceActionRepository;
+    private final PairStrategyFactory pairStrategyFactory;
 
     public BotService(PriceActionRepository priceActionRepository, PairStrategyFactory pairStrategyFactory) {
         this.priceActionRepository = priceActionRepository;
