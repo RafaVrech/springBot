@@ -3,7 +3,6 @@ package com.vrechbot.strategy;
 import com.vrechbot.domain.PriceAction;
 import com.vrechbot.repository.PriceActionRepository;
 import com.vrechbot.service.MessageService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -33,9 +32,9 @@ public abstract class PairStrategy {
         List<PriceAction> buyActions = priceActionRepository.findBuyActionsByDataAndPair(LocalDateTime.now().minusMinutes(15), getType());
         List<PriceAction> sellActions = priceActionRepository.findSellActionsByDataAndPair(LocalDateTime.now().minusMinutes(15), getType());
 
-        if (buyActions.size() >= 50) {
+        if (buyActions.size() >= 50 && buyActions.get(0).getPercentage() >= 90) {
             calculateAndSendMessage(buyActions, BUY);
-        } else if (sellActions.size() >= 50) {
+        } else if (sellActions.size() >= 50 && buyActions.get(0).getPercentage() <= 10) {
             calculateAndSendMessage(sellActions, SELL);
         }
     }
